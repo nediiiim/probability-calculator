@@ -1,0 +1,44 @@
+import copy
+import random
+
+class Hat:
+    # Init creates a list of the color for n times, ** makes the input into a dictionary
+    contents = list()
+    drawn_contents = list()
+    def __init__ (self, **color_num):
+        for color, num in color_num.items():
+            for x in range(1, num + 1):
+                self.contents.append(color)
+
+    def draw(self, balls_drawn):
+        self.drawn_contents = list()
+        hat_contents = copy.copy(self.contents)
+        num_balls_hat = len(self.contents)
+        if balls_drawn > num_balls_hat:
+            return hat_contents
+        while balls_drawn > 0:
+            num = random.randint(0, balls_drawn - 1)
+            ball_drawn = hat_contents[num]
+            self.drawn_contents.append(ball_drawn)
+            del hat_contents[num]
+            balls_drawn = ball_drawn - 1
+            num_balls_hat = num_balls_hat - 1
+
+def experiment(**kwargs):
+    inputs = list()
+    expected = list()
+    # This for loop takes the values from the keys and turns into a separate list
+    for k, v in kwargs.items():
+        inputs.append(v)
+    # This for loop targets the list that has the colors with the number of balls
+    for k, v in inputs[1].items():
+        for i in range(1, v + 1, 1):
+            expected.append(k)
+    count_prob = 0
+    count = 0
+    while count <= inputs[3]:
+        if all(elem in Hat.draw(inputs[2]) for elem in expected):
+            count_prob = count_prob + 1
+        count = count + 1
+
+    return count_prob / inputs[3]
